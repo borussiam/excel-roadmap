@@ -230,6 +230,25 @@ function renderCards(rows) {
   els.cards.innerHTML = rows.map(cardTemplate).join("");
 }
 
+function renderDifficultyBadge(row) {
+  const level = row.난이도값 || "미분류";
+  const order = Number(row.난이도순서값);
+
+  if (!Number.isFinite(order) || order < 1 || order > 30) {
+    return `<span class="badge">${escapeHtml(level)}</span>`;
+  }
+
+  return `
+    <img
+      class="difficulty-badge"
+      src="img/${order}.svg"
+      alt="${escapeAttribute(level)}"
+      title="${escapeAttribute(level)}"
+      loading="lazy"
+    />
+  `;
+}
+
 function cardTemplate(row) {
   const link = row["대화링크"] || "";
   const memo = row["메모"] || "";
@@ -241,7 +260,7 @@ function cardTemplate(row) {
       <div class="card__top">
         <span class="topic-id">${escapeHtml(row.표시번호값)}</span>
         <div class="badges">
-          <span class="badge">${escapeHtml(row.난이도값)}</span>
+          ${renderDifficultyBadge(row)}
           <span class="badge ${statusClass(row.상태값)}">${escapeHtml(row.상태값)}</span>
         </div>
       </div>
