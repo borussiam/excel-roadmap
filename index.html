@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>엑셀 로드맵</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="hero__inner">
+      <div>
+        <p class="eyebrow">Excel Learning Roadmap</p>
+        <h1>엑셀 로드맵</h1>
+        <p class="hero__desc">Google Sheets를 데이터베이스처럼 읽어오는 개인 학습 대시보드입니다.</p>
+      </div>
+      <div class="hero__panel">
+        <div class="progress-label">
+          <span>전체 완료율</span>
+          <strong id="rateText">-</strong>
+        </div>
+        <div class="progress-bar" aria-label="전체 완료율">
+          <div id="progressFill" class="progress-bar__fill"></div>
+        </div>
+        <p id="loadInfo" class="load-info">데이터를 불러오는 중...</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="stats" aria-label="요약 통계">
+      <article class="stat-card">
+        <span>전체</span>
+        <strong id="totalCount">0</strong>
+      </article>
+      <article class="stat-card">
+        <span>완료</span>
+        <strong id="doneCount">0</strong>
+      </article>
+      <article class="stat-card">
+        <span>진행 중</span>
+        <strong id="progressCount">0</strong>
+      </article>
+      <article class="stat-card">
+        <span>미시작</span>
+        <strong id="todoCount">0</strong>
+      </article>
+    </section>
+
+    <section class="toolbar" aria-label="검색 및 필터">
+      <div class="search-wrap">
+        <label for="searchInput">검색</label>
+        <input id="searchInput" type="search" placeholder="예: SUMPRODUCT, 드롭다운, 7005" autocomplete="off" />
+      </div>
+
+      <div class="select-wrap">
+        <label for="categoryFilter">대분류</label>
+        <select id="categoryFilter">
+          <option value="">전체</option>
+        </select>
+      </div>
+
+      <div class="select-wrap">
+        <label for="levelFilter">난이도</label>
+        <select id="levelFilter">
+          <option value="">전체</option>
+        </select>
+      </div>
+
+      <div class="select-wrap">
+        <label for="statusFilter">상태</label>
+        <select id="statusFilter">
+          <option value="">전체</option>
+        </select>
+      </div>
+
+      <div class="select-wrap">
+        <label for="sortSelect">정렬</label>
+        <select id="sortSelect">
+          <option value="number">번호순</option>
+          <option value="difficulty">난이도순</option>
+          <option value="category">대분류순</option>
+          <option value="status">상태순</option>
+          <option value="recent">최근 학습일순</option>
+        </select>
+      </div>
+
+      <button id="resetBtn" class="ghost-btn" type="button">초기화</button>
+    </section>
+
+    <section class="result-head">
+      <h2>주제 목록</h2>
+      <p><strong id="visibleCount">0</strong>개 표시 중</p>
+    </section>
+
+    <section id="cards" class="cards" aria-live="polite"></section>
+
+    <section id="emptyState" class="empty" hidden>
+      <h2>조건에 맞는 주제가 없습니다.</h2>
+      <p>검색어를 줄이거나 필터를 초기화해 보세요.</p>
+    </section>
+  </main>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
