@@ -231,8 +231,19 @@ function renderCards(rows) {
   els.emptyState.hidden = rows.length > 0;
 
   if (state.view === "list") {
-    els.cards.className = "cards cards--list";
-    els.cards.innerHTML = rows.map(listTemplate).join("");
+    els.cards.className = "cards topic-list";
+    els.cards.innerHTML = `
+      <div class="topic-list__head" role="row">
+        <span>난이도</span>
+        <span>번호</span>
+        <span>주제</span>
+        <span>대분류</span>
+        <span>상태</span>
+        <span>학습일</span>
+        <span>링크</span>
+      </div>
+      ${rows.map(listTemplate).join("")}
+    `;
     return;
   }
 
@@ -259,36 +270,53 @@ function renderDifficultyBadge(row) {
   `;
 }
 
+function formatCategory(row) {
+  const majorNo = row["대분류번호"];
+  const category = row.대분류값 || row["대분류"] || row["섹션명"] || "미분류";
+
+  if (majorNo !== undefined && majorNo !== null && String(majorNo).trim() !== "") {
+    return `${majorNo}: ${category}`;
+  }
+
+  return category;
+}
+
 function listTemplate(row) {
   const link = row["대화링크"] || "";
   const learnedAt = row["학습일"] || "-";
   const desc = row["한줄설명"] || "";
+  const category = formatCategory(row);
 
   return `
-    <article class="topic-row" title="${escapeAttribute(desc)}">
-      <div class="topic-row__main">
-        <div class="topic-row__badge">
-          ${renderDifficultyBadge(row)}
-        </div>
-
-        <div class="topic-row__content">
-          <div class="topic-row__titleline">
-            <span class="topic-id">${escapeHtml(row.표시번호값)}</span>
-            <h3>${escapeHtml(row.주제명값)}</h3>
-          </div>
-
-          ${desc ? `<p class="topic-row__desc">${escapeHtml(desc)}</p>` : ""}
-        </div>
+    <article class="topic-list__row" title="${escapeAttribute(desc)}">
+      <div class="topic-list__difficulty">
+        ${renderDifficultyBadge(row)}
       </div>
 
-      <div class="topic-row__side">
-        <span class="topic-row__category">${escapeHtml(row.대분류값)}</span>
-        <span class="badge ${statusClass(row.상태값)}">${escapeHtml(row.상태값)}</span>
-        <span class="topic-row__date">학습일: ${escapeHtml(learnedAt)}</span>
+      <div class="topic-list__number">
+        ${escapeHtml(row.표시번호값)}
+      </div>
 
+      <div class="topic-list__title">
+        <span class="topic-list__title-text">${escapeHtml(row.주제명값)}</span>
+      </div>
+
+      <div class="topic-list__category">
+        ${escapeHtml(category)}
+      </div>
+
+      <div class="topic-list__status">
+        <span class="badge ${statusClass(row.상태값)}">${escapeHtml(row.상태값)}</span>
+      </div>
+
+      <div class="topic-list__date">
+        ${escapeHtml(learnedAt)}
+      </div>
+
+      <div class="topic-list__link">
         ${link
-          ? `<a class="link-btn" href="${escapeAttribute(link)}" target="_blank" rel="noopener noreferrer">대화</a>`
-          : `<span class="link-btn link-btn--disabled">링크 없음</span>`}
+          ? `<a class="plain-link" href="${escapeAttribute(link)}" target="_blank" rel="noopener noreferrer">열기</a>`
+          : `<span class="muted-text">없음</span>`}
       </div>
     </article>
   `;
