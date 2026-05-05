@@ -3,6 +3,7 @@ const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRJ4fqUN6kglRSC
 const state = {
   rows: [],
   filtered: [],
+  view: "list",
 };
 
 const els = {
@@ -14,6 +15,7 @@ const els = {
   statusFilter: document.querySelector("#statusFilter"),
   sortSelect: document.querySelector("#sortSelect"),
   resetBtn: document.querySelector("#resetBtn"),
+  viewButtons: document.querySelectorAll(".view-btn"),
   totalCount: document.querySelector("#totalCount"),
   doneCount: document.querySelector("#doneCount"),
   progressCount: document.querySelector("#progressCount"),
@@ -227,6 +229,14 @@ function sortRows(rows, mode) {
 function renderCards(rows) {
   els.visibleCount.textContent = rows.length.toLocaleString("ko-KR");
   els.emptyState.hidden = rows.length > 0;
+
+  if (state.view === "list") {
+    els.cards.className = "cards cards--list";
+    els.cards.innerHTML = rows.map(listTemplate).join("");
+    return;
+  }
+
+  els.cards.className = "cards";
   els.cards.innerHTML = rows.map(cardTemplate).join("");
 }
 
@@ -246,6 +256,41 @@ function renderDifficultyBadge(row) {
       title="${escapeAttribute(level)}"
       loading="lazy"
     />
+  `;
+}
+
+function listTemplate(row) {
+  const link = row["대화링크"] || "";
+  const learnedAt = row["학습일"] || "-";
+  const desc = row["한줄설명"] || "";
+
+  return `
+    <article class="topic-row" title="${escapeAttribute(desc)}">
+      <div class="topic-row__main">
+        <div class="topic-row__badge">
+          ${renderDifficultyBadge(row)}
+        </div>
+
+        <div class="topic-row__content">
+          <div class="topic-row__titleline">
+            <span class="topic-id">${escapeHtml(row.표시번호값)}</span>
+            <h3>${escapeHtml(row.주제명값)}</h3>
+          </div>
+
+          ${desc ? `<p class="topic-row__desc">${escapeHtml(desc)}</p>` : ""}
+        </div>
+      </div>
+
+      <div class="topic-row__side">
+        <span class="topic-row__category">${escapeHtml(row.대분류값)}</span>
+        <span class="badge ${statusClass(row.상태값)}">${escapeHtml(row.상태값)}</span>
+        <span class="topic-row__date">학습일: ${escapeHtml(learnedAt)}</span>
+
+        ${link
+          ? `<a class="link-btn" href="${escapeAttribute(link)}" target="_blank" rel="noopener noreferrer">대화</a>`
+          : `<span class="link-btn link-btn--disabled">링크 없음</span>`}
+      </div>
+    </article>
   `;
 }
 
@@ -300,6 +345,18 @@ function bindEvents() {
     els.statusFilter,
     els.sortSelect,
   ].forEach((el) => el.addEventListener("input", applyFilters));
+
+  els.viewButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      state.view = button.dataset.view;
+
+      els.viewButtons.forEach((btn) => {
+        btn.classList.toggle("is-active", btn === button);
+      });
+
+      renderCards(state.filtered);
+    });
+  });
 
   els.resetBtn.addEventListener("click", () => {
     els.searchInput.value = "";
