@@ -290,7 +290,7 @@ function listTemplate(row) {
     <article class="topic-list__row" title="${escapeAttribute(desc)}">
       <div class="topic-list__id">
         ${renderDifficultyBadge(row)}
-        <span class="topic-list__number">${escapeHtml(row.표시번호값}</span>
+        <span class="topic-list__number">${escapeHtml(row.표시번호값)}</span>
       </div>
 
       <div class="topic-list__title">
