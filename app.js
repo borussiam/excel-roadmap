@@ -234,8 +234,7 @@ function renderCards(rows) {
     els.cards.className = "cards topic-list";
     els.cards.innerHTML = `
       <div class="topic-list__head" role="row">
-        <span>난이도</span>
-        <span>번호</span>
+        <span>#</span>
         <span>주제</span>
         <span>대분류</span>
         <span>상태</span>
@@ -289,12 +288,9 @@ function listTemplate(row) {
 
   return `
     <article class="topic-list__row" title="${escapeAttribute(desc)}">
-      <div class="topic-list__difficulty">
+      <div class="topic-list__id">
         ${renderDifficultyBadge(row)}
-      </div>
-
-      <div class="topic-list__number">
-        ${escapeHtml(row.표시번호값)}
+        <span class="topic-list__number">${escapeHtml(row.표시번호값}</span>
       </div>
 
       <div class="topic-list__title">
