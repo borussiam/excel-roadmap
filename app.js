@@ -200,6 +200,8 @@ function initFilters() {
 
   els.categoryFilter.value = "";
   els.statusFilter.value = "";
+  
+  resetLevelRange();
 }
 
 function fixLevelRange(changedSide) {
@@ -210,9 +212,9 @@ function fixLevelRange(changedSide) {
   if (min <= max) return;
 
   if (changedSide === "min") {
-    els.levelMaxFilter.value = els.levelMinFilter.value;
-  } else {
     els.levelMinFilter.value = els.levelMaxFilter.value;
+  } else {
+    els.levelMaxFilter.value = els.levelMinFilter.value;
   }
 }
 
