@@ -11,7 +11,8 @@ const els = {
   emptyState: document.querySelector("#emptyState"),
   searchInput: document.querySelector("#searchInput"),
   categoryFilter: document.querySelector("#categoryFilter"),
-  levelFilter: document.querySelector("#levelFilter"),
+  levelMinFilter: document.querySelector("#levelMinFilter"),
+  levelMaxFilter: document.querySelector("#levelMaxFilter"),
   statusFilter: document.querySelector("#statusFilter"),
   sortSelect: document.querySelector("#sortSelect"),
   resetBtn: document.querySelector("#resetBtn"),
@@ -150,23 +151,69 @@ function fillSelect(select, values) {
   select.value = "";
 }
 
+function fillRangeSelect(select, values) {
+  select.innerHTML = "";
+
+  values.forEach((item) => {
+    const option = new Option(item.label, item.value);
+    select.appendChild(option);
+  });
+}
+
+function getLevelOptions(rows) {
+  const map = new Map();
+
+  rows.forEach((row) => {
+    const order = Number(row.난이도순서값);
+    const label = row.난이도값;
+
+    if (!Number.isFinite(order) || !label) return;
+    if (map.has(order)) return;
+
+    map.set(order, {
+      value: String(order),
+      label,
+      order,
+    });
+  });
+
+  return [...map.values()].sort((a, b) => a.order - b.order);
+}
+
+function resetLevelRange() {
+  const firstValue = els.levelMinFilter.options[0]?.value || "";
+  const lastValue = els.levelMaxFilter.options[els.levelMaxFilter.options.length - 1]?.value || "";
+
+  els.levelMinFilter.value = firstValue;
+  els.levelMaxFilter.value = lastValue;
+}
+
 function initFilters() {
   const categories = getCategoryOptions(state.rows);
-
-  const levels = uniqueValues(state.rows, "난이도값").sort((a, b) => {
-    const aOrder = state.rows.find((row) => row.난이도값 === a)?.난이도순서값 ?? 999;
-    const bOrder = state.rows.find((row) => row.난이도값 === b)?.난이도순서값 ?? 999;
-    return aOrder - bOrder;
-  });
+  const levels = getLevelOptions(state.rows);
   const statuses = ["미시작", "진행중", "완료", "보류"];
 
   fillSelect(els.categoryFilter, categories);
-  fillSelect(els.levelFilter, levels);
+  fillRangeSelect(els.levelMinFilter, levels);
+  fillRangeSelect(els.levelMaxFilter, levels);
   fillSelect(els.statusFilter, statuses);
 
   els.categoryFilter.value = "";
-  els.levelFilter.value = "";
   els.statusFilter.value = "";
+}
+
+function fixLevelRange(changedSide) {
+  const min = Number(els.levelMinFilter.value);
+  const max = Number(els.levelMaxFilter.value);
+
+  if (!Number.isFinite(min) || !Number.isFinite(max)) return;
+  if (min <= max) return;
+
+  if (changedSide === "min") {
+    els.levelMaxFilter.value = els.levelMinFilter.value;
+  } else {
+    els.levelMinFilter.value = els.levelMaxFilter.value;
+  }
 }
 
 function updateStats(rows) {
@@ -187,7 +234,8 @@ function updateStats(rows) {
 function applyFilters() {
   const query = els.searchInput.value.trim().toLowerCase();
   const category = els.categoryFilter.value;
-  const level = els.levelFilter.value;
+  const levelMin = Number(els.levelMinFilter.value);
+  const levelMax = Number(els.levelMaxFilter.value);
   const status = els.statusFilter.value
   ? normalizeStatus(els.statusFilter.value)
   : "";
@@ -195,7 +243,13 @@ function applyFilters() {
   let result = state.rows.filter((row) => {
     const matchesQuery = !query || row.검색문자열.includes(query);
     const matchesCategory = !category || row.대분류값 === category;
-    const matchesLevel = !level || row.난이도값 === level;
+    const matchesLevel =
+      !Number.isFinite(levelMin) ||
+      !Number.isFinite(levelMax) ||
+      (
+        row.난이도순서값 >= levelMin &&
+        row.난이도순서값 <= levelMax
+      );
     const matchesStatus = !status || row.상태정규화 === status;
     return matchesQuery && matchesCategory && matchesLevel && matchesStatus;
   });
@@ -407,7 +461,6 @@ function bindEvents() {
   [
     els.searchInput,
     els.categoryFilter,
-    els.levelFilter,
     els.statusFilter,
     els.sortSelect,
   ].forEach((el) => el.addEventListener("input", applyFilters));
@@ -424,10 +477,20 @@ function bindEvents() {
     });
   });
 
+  els.levelMinFilter.addEventListener("input", () => {
+    fixLevelRange("min");
+    applyFilters();
+  });
+
+  els.levelMaxFilter.addEventListener("input", () => {
+    fixLevelRange("max");
+    applyFilters();
+  });
+
   els.resetBtn.addEventListener("click", () => {
     els.searchInput.value = "";
     els.categoryFilter.value = "";
-    els.levelFilter.value = "";
+    resetLevelRange();
     els.statusFilter.value = "";
     els.sortSelect.value = "number";
     applyFilters();
