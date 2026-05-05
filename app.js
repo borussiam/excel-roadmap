@@ -133,18 +133,26 @@ function uniqueValues(rows, key) {
 }
 
 function fillSelect(select, values) {
-  const first = select.querySelector("option[value='']");
   select.innerHTML = "";
-  select.appendChild(first || new Option("전체", ""));
 
-  values.forEach((value) => {
-    const option = new Option(value, value);
+  const allOption = new Option("전체", "");
+  allOption.selected = true;
+  select.appendChild(allOption);
+
+  values.forEach((item) => {
+    const value = typeof item === "string" ? item : item.value;
+    const label = typeof item === "string" ? item : item.label;
+
+    const option = new Option(label, value);
     select.appendChild(option);
   });
+
+  select.value = "";
 }
 
 function initFilters() {
-  const categories = uniqueValues(state.rows, "대분류값").sort((a, b) => a.localeCompare(b, "ko"));
+  const categories = getCategoryOptions(state.rows);
+
   const levels = uniqueValues(state.rows, "난이도값").sort((a, b) => {
     const aOrder = state.rows.find((row) => row.난이도값 === a)?.난이도순서값 ?? 999;
     const bOrder = state.rows.find((row) => row.난이도값 === b)?.난이도순서값 ?? 999;
@@ -155,6 +163,10 @@ function initFilters() {
   fillSelect(els.categoryFilter, categories);
   fillSelect(els.levelFilter, levels);
   fillSelect(els.statusFilter, statuses);
+
+  els.categoryFilter.value = "";
+  els.levelFilter.value = "";
+  els.statusFilter.value = "";
 }
 
 function updateStats(rows) {
@@ -272,6 +284,12 @@ function renderDifficultyBadge(row) {
 }
 
 function formatCategory(row) {
+  const display = row["대분류표시"];
+
+  if (display && String(display).trim() !== "") {
+    return String(display).trim();
+  }
+
   const majorNo = row["대분류번호"];
   const category = row.대분류값 || row["대분류"] || row["섹션명"] || "미분류";
 
@@ -280,6 +298,28 @@ function formatCategory(row) {
   }
 
   return category;
+}
+
+function getCategoryOptions(rows) {
+  const map = new Map();
+
+  rows.forEach((row) => {
+    const value = row.대분류값;
+    if (!value || map.has(value)) return;
+
+    const order = Number(row["대분류번호"] || 999);
+    const safeOrder = Number.isFinite(order) ? order : 999;
+
+    map.set(value, {
+      value,
+      label: formatCategory(row),
+      order: safeOrder,
+    });
+  });
+
+  return [...map.values()].sort((a, b) => {
+    return (a.order - b.order) || a.label.localeCompare(b.label, "ko");
+  });
 }
 
 function listTemplate(row) {
@@ -337,7 +377,7 @@ function cardTemplate(row) {
       </div>
       <h3>${escapeHtml(row.주제명값)}</h3>
       <div class="card__meta">
-        <span>${escapeHtml(row.대분류값)}</span>
+        <span>${escapeHtml(formatCategory(row))}</span>
         <span>학습일: ${escapeHtml(learnedAt)} · 다음 복습: ${escapeHtml(nextReview)}</span>
       </div>
       ${memo ? `<p class="card__memo">${escapeHtml(memo)}</p>` : ""}
