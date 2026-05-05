@@ -1,0 +1,46 @@
+name: Check site files
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Check JavaScript syntax
+        run: node --check app.js
+
+      - name: Create temporary validator configs
+        run: |
+          cat > .htmlvalidate.json <<'EOF'
+          {
+            "extends": ["html-validate:recommended"]
+          }
+          EOF
+
+          cat > .stylelintrc.json <<'EOF'
+          {
+            "rules": {}
+          }
+          EOF
+
+      - name: Validate HTML
+        run: npx --yes html-validate "index.html"
+
+      - name: Check CSS syntax
+        run: npx --yes stylelint "style.css" --config .stylelintrc.json
