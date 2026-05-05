@@ -529,17 +529,6 @@ select:focus {
   background: #f8faff;
 }
 
-.topic-list__difficulty {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.topic-list__difficulty .difficulty-badge {
-  width: 28px;
-  height: 28px;
-}
-
 .topic-list__number {
   color: var(--muted);
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
@@ -619,8 +608,7 @@ select:focus {
 .topic-list__row {
   display: grid;
   grid-template-columns:
-    26px                 /* 난이도 딱지 */
-    76px                 /* 번호 */
+    86px                 /* 난이도 딱지 + 번호 */
     minmax(220px, 1.8fr) /* 주제명 */
     minmax(170px, 1fr)   /* 대분류 */
     72px                 /* 상태 */
@@ -752,4 +740,29 @@ select:focus {
 .muted-text {
   color: #a0a7b5;
   font-size: 12px;
+}
+
+.topic-list__id {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.topic-list__id .difficulty-badge {
+  width: 16px;
+  height: 16px;
+  display: block;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+
+.topic-list__number {
+  color: var(--text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
 }
