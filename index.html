@@ -89,8 +89,15 @@
     </section>
 
     <section class="result-head">
-      <h2>주제 목록</h2>
-      <p><strong id="visibleCount">0</strong>개 표시 중</p>
+      <div>
+        <h2>주제 목록</h2>
+        <p><strong id="visibleCount">0</strong>개 표시 중</p>
+      </div>
+    
+      <div class="view-switch" role="group" aria-label="보기 방식">
+        <button class="view-btn is-active" type="button" data-view="list">목록</button>
+        <button class="view-btn" type="button" data-view="card">카드</button>
+      </div>
     </section>
 
     <section id="cards" class="cards" aria-live="polite"></section>
