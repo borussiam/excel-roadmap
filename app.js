@@ -176,7 +176,9 @@ function applyFilters() {
   const query = els.searchInput.value.trim().toLowerCase();
   const category = els.categoryFilter.value;
   const level = els.levelFilter.value;
-  const status = normalizeStatus(els.statusFilter.value);
+  const status = els.statusFilter.value
+  ? normalizeStatus(els.statusFilter.value)
+  : "";
 
   let result = state.rows.filter((row) => {
     const matchesQuery = !query || row.검색문자열.includes(query);
