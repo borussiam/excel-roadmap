@@ -70,11 +70,37 @@
         <select id="levelMaxFilter"></select>
       </div>
 
-      <div class="select-wrap">
-        <label for="statusFilter">상태</label>
-        <select id="statusFilter">
-          <option value="">전체</option>
-        </select>
+      <div class="select-wrap status-filter">
+        <span class="filter-label">상태</span>
+
+        <div id="statusFilter" class="status-options" role="group" aria-label="상태 필터">
+          <label class="check-pill">
+            <input class="status-checkbox" type="checkbox" value="미시작" checked>
+            <span>미시작</span>
+          </label>
+
+          <label class="check-pill">
+            <input class="status-checkbox" type="checkbox" value="진행중" checked>
+            <span>진행중</span>
+          </label>
+
+          <label class="check-pill">
+            <input class="status-checkbox" type="checkbox" value="완료" checked>
+            <span>완료</span>
+          </label>
+
+          <label class="check-pill">
+            <input class="status-checkbox" type="checkbox" value="보류" checked>
+            <span>보류</span>
+          </label>
+        </div>
+
+        <div class="status-presets" aria-label="상태 빠른 선택">
+          <button class="status-preset-btn" type="button" data-status-preset="all">전체</button>
+          <button class="status-preset-btn" type="button" data-status-preset="not-done">미완료만</button>
+          <button class="status-preset-btn" type="button" data-status-preset="done">완료만</button>
+          <button class="status-preset-btn" type="button" data-status-preset="progress">진행중</button>
+        </div>
       </div>
 
       <div class="select-wrap">

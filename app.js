@@ -6,6 +6,8 @@ const state = {
   view: "list",
 };
 
+const STATUS_OPTIONS = ["미시작", "진행중", "완료", "보류"];
+
 const els = {
   cards: document.querySelector("#cards"),
   emptyState: document.querySelector("#emptyState"),
@@ -14,6 +16,8 @@ const els = {
   levelMinFilter: document.querySelector("#levelMinFilter"),
   levelMaxFilter: document.querySelector("#levelMaxFilter"),
   statusFilter: document.querySelector("#statusFilter"),
+  statusCheckboxes: document.querySelectorAll(".status-checkbox"),
+  statusPresetButtons: document.querySelectorAll("[data-status-preset]"),
   sortSelect: document.querySelector("#sortSelect"),
   resetBtn: document.querySelector("#resetBtn"),
   viewButtons: document.querySelectorAll(".view-btn"),
@@ -151,6 +155,32 @@ function fillSelect(select, values) {
   select.value = "";
 }
 
+function getSelectedStatuses() {
+  return [...els.statusCheckboxes]
+    .filter((checkbox) => checkbox.checked)
+    .map((checkbox) => normalizeStatus(checkbox.value));
+}
+
+function setSelectedStatuses(statuses) {
+  const normalizedStatuses = new Set(statuses.map(normalizeStatus));
+
+  els.statusCheckboxes.forEach((checkbox) => {
+    checkbox.checked = normalizedStatuses.has(normalizeStatus(checkbox.value));
+  });
+}
+
+function applyStatusPreset(preset) {
+  const presets = {
+    all: STATUS_OPTIONS,
+    "not-done": ["미시작", "진행중", "보류"],
+    done: ["완료"],
+    progress: ["진행중"],
+  };
+
+  setSelectedStatuses(presets[preset] || STATUS_OPTIONS);
+  applyFilters();
+}
+
 function fillRangeSelect(select, values) {
   select.innerHTML = "";
 
@@ -196,12 +226,11 @@ function initFilters() {
   fillSelect(els.categoryFilter, categories);
   fillRangeSelect(els.levelMinFilter, levels);
   fillRangeSelect(els.levelMaxFilter, levels);
-  fillSelect(els.statusFilter, statuses);
 
   els.categoryFilter.value = "";
-  els.statusFilter.value = "";
   
   resetLevelRange();
+  setSelectedStatuses(STATUS_OPTIONS);
 }
 
 function fixLevelRange(changedSide) {
@@ -238,9 +267,7 @@ function applyFilters() {
   const category = els.categoryFilter.value;
   const levelMin = Number(els.levelMinFilter.value);
   const levelMax = Number(els.levelMaxFilter.value);
-  const status = els.statusFilter.value
-  ? normalizeStatus(els.statusFilter.value)
-  : "";
+  const selectedStatuses = getSelectedStatuses();
 
   let result = state.rows.filter((row) => {
     const matchesQuery = !query || row.검색문자열.includes(query);
@@ -252,7 +279,9 @@ function applyFilters() {
         row.난이도순서값 >= levelMin &&
         row.난이도순서값 <= levelMax
       );
-    const matchesStatus = !status || row.상태정규화 === status;
+    const matchesStatus =
+      selectedStatuses.length === 0 ||
+      selectedStatuses.includes(row.상태정규화);
     return matchesQuery && matchesCategory && matchesLevel && matchesStatus;
   });
 
@@ -463,9 +492,18 @@ function bindEvents() {
   [
     els.searchInput,
     els.categoryFilter,
-    els.statusFilter,
     els.sortSelect,
   ].forEach((el) => el.addEventListener("input", applyFilters));
+
+  els.statusCheckboxes.forEach((checkbox) => {
+    checkbox.addEventListener("change", applyFilters);
+  });
+
+  els.statusPresetButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      applyStatusPreset(button.dataset.statusPreset);
+    });
+  });
 
   els.viewButtons.forEach((button) => {
     button.addEventListener("click", () => {
@@ -493,7 +531,7 @@ function bindEvents() {
     els.searchInput.value = "";
     els.categoryFilter.value = "";
     resetLevelRange();
-    els.statusFilter.value = "";
+    setSelectedStatuses(STATUS_OPTIONS);
     els.sortSelect.value = "number";
     applyFilters();
   });
