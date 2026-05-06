@@ -279,9 +279,7 @@ function applyFilters() {
         row.난이도순서값 >= levelMin &&
         row.난이도순서값 <= levelMax
       );
-    const matchesStatus =
-      selectedStatuses.length === 0 ||
-      selectedStatuses.includes(row.상태정규화);
+    const matchesStatus = selectedStatuses.includes(row.상태정규화);
     return matchesQuery && matchesCategory && matchesLevel && matchesStatus;
   });
 
