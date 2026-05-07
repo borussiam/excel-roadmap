@@ -15,7 +15,10 @@ const els = {
   categoryFilter: document.querySelector("#categoryFilter"),
   levelMinFilter: document.querySelector("#levelMinFilter"),
   levelMaxFilter: document.querySelector("#levelMaxFilter"),
-  statusFilter: document.querySelector("#statusFilter"),
+  levelMinRange: document.querySelector("#levelMinRange"),
+  levelMaxRange: document.querySelector("#levelMaxRange"),
+  levelRangeText: document.querySelector("#levelRangeText"),
+  levelRangeTrack: document.querySelector("#levelRangeTrack"),
   statusCheckboxes: document.querySelectorAll(".status-checkbox"),
   statusPresetButtons: document.querySelectorAll("[data-status-preset]"),
   sortSelect: document.querySelector("#sortSelect"),
@@ -206,12 +209,30 @@ function getLevelOptions(rows) {
   return [...map.values()].sort((a, b) => a.order - b.order);
 }
 
+function getLevelLabel(value) {
+  const option = getLevelOptions(state.rows).find((item) => {
+    return String(item.value) === String(value);
+  });
+
+  return option ? option.label : String(value);
+}
+
 function resetLevelRange() {
   const firstValue = els.levelMinFilter.options[0]?.value || "";
   const lastValue = els.levelMaxFilter.options[els.levelMaxFilter.options.length - 1]?.value || "";
 
   els.levelMinFilter.value = firstValue;
   els.levelMaxFilter.value = lastValue;
+
+  els.levelMinRange.min = firstValue;
+  els.levelMinRange.max = lastValue;
+  els.levelMaxRange.min = firstValue;
+  els.levelMaxRange.max = lastValue;
+
+  els.levelMinRange.value = firstValue;
+  els.levelMaxRange.value = lastValue;
+
+  updateLevelRangeUi();
 }
 
 function initFilters() {
@@ -228,6 +249,18 @@ function initFilters() {
   setSelectedStatuses(STATUS_OPTIONS);
 }
 
+function syncLevelInputs(source) {
+  if (source === "range") {
+    els.levelMinFilter.value = els.levelMinRange.value;
+    els.levelMaxFilter.value = els.levelMaxRange.value;
+  }
+
+  if (source === "select") {
+    els.levelMinRange.value = els.levelMinFilter.value;
+    els.levelMaxRange.value = els.levelMaxFilter.value;
+  }
+}
+
 function fixLevelRange(changedSide) {
   const min = Number(els.levelMinFilter.value);
   const max = Number(els.levelMaxFilter.value);
@@ -236,9 +269,9 @@ function fixLevelRange(changedSide) {
   if (min <= max) return;
 
   if (changedSide === "min") {
-    els.levelMinFilter.value = els.levelMaxFilter.value;
-  } else {
     els.levelMaxFilter.value = els.levelMinFilter.value;
+  } else {
+    els.levelMinFilter.value = els.levelMaxFilter.value;
   }
 }
 
@@ -255,6 +288,23 @@ function updateStats(rows) {
   els.todoCount.textContent = todo.toLocaleString("ko-KR");
   els.rateText.textContent = `${rate}%`;
   els.progressFill.style.width = `${rate}%`;
+}
+
+function updateLevelRangeUi() {
+  const min = Number(els.levelMinFilter.value);
+  const max = Number(els.levelMaxFilter.value);
+
+  const rangeMin = Number(els.levelMinRange.min);
+  const rangeMax = Number(els.levelMinRange.max);
+  const distance = rangeMax - rangeMin || 1;
+
+  const left = ((min - rangeMin) / distance) * 100;
+  const right = ((max - rangeMin) / distance) * 100;
+
+  els.levelRangeText.textContent = `${getLevelLabel(min)} ~ ${getLevelLabel(max)}`;
+
+  els.levelRangeTrack.style.left = `${left}%`;
+  els.levelRangeTrack.style.right = `${100 - right}%`;
 }
 
 function applyFilters() {
@@ -512,11 +562,31 @@ function bindEvents() {
 
   els.levelMinFilter.addEventListener("input", () => {
     fixLevelRange("min");
+    syncLevelInputs("select");
+    updateLevelRangeUi();
     applyFilters();
   });
 
   els.levelMaxFilter.addEventListener("input", () => {
     fixLevelRange("max");
+    syncLevelInputs("select");
+    updateLevelRangeUi();
+    applyFilters();
+  });
+
+  els.levelMinRange.addEventListener("input", () => {
+    syncLevelInputs("range");
+    fixLevelRange("min");
+    syncLevelInputs("select");
+    updateLevelRangeUi();
+    applyFilters();
+  });
+
+  els.levelMaxRange.addEventListener("input", () => {
+    syncLevelInputs("range");
+    fixLevelRange("max");
+    syncLevelInputs("select");
+    updateLevelRangeUi();
     applyFilters();
   });
 
