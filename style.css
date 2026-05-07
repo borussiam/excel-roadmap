@@ -382,53 +382,6 @@ select:focus {
   color: var(--muted);
 }
 
-@media (max-width: 980px) {
-  .hero__inner {
-    grid-template-columns: 1fr;
-  }
-
-  .stats {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .toolbar {
-    position: static;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .search-wrap {
-    grid-column: 1 / -1;
-  }
-
-  .cards {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 640px) {
-  .hero {
-    padding-top: 34px;
-  }
-
-  .hero__panel,
-  .toolbar,
-  .card {
-    border-radius: 18px;
-  }
-
-  .stats,
-  .toolbar,
-  .cards {
-    grid-template-columns: 1fr;
-  }
-
-  .result-head {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 6px;
-  }
-}
-
 .difficulty-badge {
   width: 20px;
   height: 20px;
@@ -478,12 +431,6 @@ select:focus {
 .result-head {
   align-items: center;
   gap: 16px;
-}
-
-.cards.cards--list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
 }
 
 .cards.topic-list {
@@ -590,10 +537,6 @@ select:focus {
   font-size: 13px;
 }
 
-/* ===============================
-   Compact table-like list view
-   =============================== */
-
 .cards.topic-list {
   display: block;
   border: 1px solid var(--line);
@@ -603,7 +546,6 @@ select:focus {
   box-shadow: 0 8px 24px rgba(17, 24, 39, 0.06);
 }
 
-/* 머리글과 각 행은 같은 열 구조를 사용합니다. */
 .topic-list__head,
 .topic-list__row {
   display: grid;
@@ -618,7 +560,6 @@ select:focus {
   column-gap: 8px;
 }
 
-/* 테이블 머리글 */
 .topic-list__head {
   min-height: 32px;
   padding: 0 10px;
@@ -630,7 +571,6 @@ select:focus {
   white-space: nowrap;
 }
 
-/* 각 주제 행 */
 .topic-list__row {
   min-height: 34px;
   padding: 0 10px;
@@ -647,23 +587,6 @@ select:focus {
   background: #f7f9ff;
 }
 
-/* 난이도 딱지 칸 */
-.topic-list__difficulty {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 0;
-}
-
-/* 목록 뷰에서는 딱지를 작게 */
-.topic-list__difficulty .difficulty-badge {
-  width: 18px;
-  height: 18px;
-  display: block;
-  object-fit: contain;
-}
-
-/* 번호 */
 .topic-list__number {
   color: var(--muted);
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
@@ -672,7 +595,6 @@ select:focus {
   white-space: nowrap;
 }
 
-/* 주제명 */
 .topic-list__title {
   min-width: 0;
 }
@@ -687,7 +609,6 @@ select:focus {
   text-overflow: ellipsis;
 }
 
-/* 대분류 */
 .topic-list__category {
   min-width: 0;
   color: var(--muted);
@@ -697,7 +618,6 @@ select:focus {
   text-overflow: ellipsis;
 }
 
-/* 상태 */
 .topic-list__status {
   display: flex;
   align-items: center;
@@ -711,7 +631,6 @@ select:focus {
   white-space: nowrap;
 }
 
-/* 학습일 */
 .topic-list__date {
   color: var(--muted);
   font-size: 12px;
@@ -720,7 +639,6 @@ select:focus {
   text-overflow: ellipsis;
 }
 
-/* 링크 */
 .topic-list__link {
   text-align: right;
   white-space: nowrap;
