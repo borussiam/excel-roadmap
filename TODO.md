@@ -1,6 +1,15 @@
 # TODO
 
-## Current Cleanup
+## Work In Progress
+
+- [High] [feat/filter] Prototype two-point difficulty range slider.
+  - Keep the existing start/end difficulty selects.
+  - Add two range inputs as visual controls.
+  - Synchronize range inputs and selects in both directions.
+  - Keep filtering based on `난이도순서값`.
+  - Improve layout after search/filter separation.
+
+## Cleanup
 
 - [High] [refactor/css] Clean up duplicated list-view CSS in `style.css`.
 - [High] [refactor/css] Remove unused or outdated CSS rules.
@@ -9,6 +18,22 @@
 ---
 
 ## Next Work
+
+- [High] [feat/ui] Separate search bar and detailed filters.
+  - Keep the top area focused on quick actions.
+    - Search input, Filter toggle button, Sort select, Reset button, etc.
+
+- [High] [feat/filter] Move detailed filters into a collapsible filter panel.
+
+- [High] [style/filter] Rework filter layout after panel separation.
+  - Do not solve the current cramped layout by patching many small CSS rules.
+  - First separate the structure, then adjust spacing.
+  - Make the difficulty slider readable on desktop.
+  - Make filters stack naturally on smaller screens.
+
+- [Medium] [feat/filter] Add difficulty scale markers to the range slider.
+  - Show Bronze-Ruby level positions visually.
+  - Add tick marks and badge images.
 
 - [High] [feat/search] Add `한줄설명` to the search target.
   - Include one-line descriptions in the search string.
