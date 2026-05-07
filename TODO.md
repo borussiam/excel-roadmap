@@ -13,6 +13,9 @@
 - [High] [feat/search] Add `한줄설명` to the search target.
   - Include one-line descriptions in the search string.
 
+- [Medium] [feat/filter] Replace difficulty range selects with a two-point slider.
+  - Show the difficulty scale from Bronze V to Ruby I using badge images.
+
 - [Medium] [feat/detail] Add a read-only topic detail panel.
   - Show number, difficulty, title, category, description, status, learning date, link, memo, and next review date.
 
