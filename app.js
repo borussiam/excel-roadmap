@@ -133,10 +133,6 @@ function statusRank(status) {
   return 5;
 }
 
-function uniqueValues(rows, key) {
-  return [...new Set(rows.map((row) => row[key]).filter(Boolean))];
-}
-
 function fillSelect(select, values) {
   select.innerHTML = "";
 
@@ -221,7 +217,6 @@ function resetLevelRange() {
 function initFilters() {
   const categories = getCategoryOptions(state.rows);
   const levels = getLevelOptions(state.rows);
-  const statuses = ["미시작", "진행중", "완료", "보류"];
 
   fillSelect(els.categoryFilter, categories);
   fillRangeSelect(els.levelMinFilter, levels);

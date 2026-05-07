@@ -219,8 +219,9 @@ select:focus {
 .result-head {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   margin: 0 2px 14px;
+  gap: 16px;
 }
 
 .result-head h2 {
@@ -428,115 +429,6 @@ select:focus {
   box-shadow: 0 6px 16px rgba(17, 24, 39, 0.08);
 }
 
-.result-head {
-  align-items: center;
-  gap: 16px;
-}
-
-.cards.topic-list {
-  display: block;
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  overflow: hidden;
-  background: #fff;
-  box-shadow: var(--shadow);
-}
-
-.topic-list__head,
-.topic-list__row {
-  display: grid;
-  grid-template-columns: 64px 92px minmax(280px, 1fr) minmax(220px, 300px) 92px 110px 72px;
-  align-items: center;
-  column-gap: 12px;
-}
-
-.topic-list__head {
-  min-height: 42px;
-  padding: 0 16px;
-  background: #f1f4f9;
-  border-bottom: 1px solid var(--line);
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.topic-list__row {
-  min-height: 48px;
-  padding: 0 16px;
-  border-bottom: 1px solid #edf0f5;
-  background: #fff;
-  font-size: 14px;
-}
-
-.topic-list__row:last-child {
-  border-bottom: 0;
-}
-
-.topic-list__row:hover {
-  background: #f8faff;
-}
-
-.topic-list__number {
-  color: var(--muted);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-  font-weight: 800;
-  white-space: nowrap;
-}
-
-.topic-list__title {
-  min-width: 0;
-}
-
-.topic-list__title-text {
-  display: block;
-  color: var(--text);
-  font-weight: 750;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.topic-list__category {
-  min-width: 0;
-  color: var(--muted);
-  font-size: 13px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.topic-list__status {
-  display: flex;
-  align-items: center;
-}
-
-.topic-list__date {
-  color: var(--muted);
-  font-size: 13px;
-  white-space: nowrap;
-}
-
-.topic-list__link {
-  text-align: right;
-  white-space: nowrap;
-}
-
-.plain-link {
-  color: var(--accent);
-  font-size: 13px;
-  font-weight: 800;
-  text-decoration: none;
-}
-
-.plain-link:hover {
-  text-decoration: underline;
-}
-
-.muted-text {
-  color: #a0a7b5;
-  font-size: 13px;
-}
-
 .cards.topic-list {
   display: block;
   border: 1px solid var(--line);
@@ -585,14 +477,6 @@ select:focus {
 
 .topic-list__row:hover {
   background: #f7f9ff;
-}
-
-.topic-list__number {
-  color: var(--muted);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-  font-size: 13px;
-  font-weight: 800;
-  white-space: nowrap;
 }
 
 .topic-list__title {
