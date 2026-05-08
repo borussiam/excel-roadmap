@@ -4,6 +4,8 @@ const state = {
   rows: [],
   filtered: [],
   view: "list",
+  sortKey: "number",
+  sortDir: "asc",
 };
 
 const STATUS_OPTIONS = ["미시작", "진행중", "완료", "보류"];
@@ -21,7 +23,11 @@ const els = {
   levelRangeTrack: document.querySelector("#levelRangeTrack"),
   statusCheckboxes: document.querySelectorAll(".status-checkbox"),
   statusPresetButtons: document.querySelectorAll("[data-status-preset]"),
-  sortSelect: document.querySelector("#sortSelect"),
+
+  filterToggleBtn: document.querySelector("#filterToggleBtn"),
+  filterPanel: document.querySelector("#filterPanel"),
+  sortButtons: document.querySelectorAll(".sort-btn"),
+
   resetBtn: document.querySelector("#resetBtn"),
   viewButtons: document.querySelectorAll(".view-btn"),
   totalCount: document.querySelector("#totalCount"),
@@ -328,7 +334,7 @@ function applyFilters() {
     return matchesQuery && matchesCategory && matchesLevel && matchesStatus;
   });
 
-  result = sortRows(result, els.sortSelect.value);
+  result = sortRows(result, state.sortKey, state.sortDir);
   state.filtered = result;
   renderCards(result);
 }
@@ -535,7 +541,6 @@ function bindEvents() {
   [
     els.searchInput,
     els.categoryFilter,
-    els.sortSelect,
   ].forEach((el) => el.addEventListener("input", applyFilters));
 
   els.statusCheckboxes.forEach((checkbox) => {
@@ -590,12 +595,29 @@ function bindEvents() {
     applyFilters();
   });
 
+  els.sortButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const sortKey = button.dataset.sort;
+
+      if (state.sortKey === sortKey) {
+        state.sortDir = state.sortDir === "asc" ? "desc" : "asc";
+      } else {
+        state.sortKey = sortKey;
+        state.sortDir = "asc";
+      }
+
+      updateSortButtons();
+      applyFilters();
+    });
+  });
+
   els.resetBtn.addEventListener("click", () => {
     els.searchInput.value = "";
     els.categoryFilter.value = "";
     resetLevelRange();
     setSelectedStatuses(STATUS_OPTIONS);
-    els.sortSelect.value = "number";
+    state.sortKey = "number";
+    state.sortDir = "asc";
     applyFilters();
   });
 }

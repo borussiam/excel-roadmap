@@ -47,12 +47,23 @@
       </article>
     </section>
 
-    <section class="toolbar" aria-label="검색 및 필터">
+    <section class="toolbar" aria-label="검색">
       <div class="search-wrap">
         <label for="searchInput">검색</label>
         <input id="searchInput" type="search" placeholder="예: SUMPRODUCT, 드롭다운, 7005" autocomplete="off">
       </div>
 
+      <button id="filterToggleBtn" class="ghost-btn" type="button" aria-expanded="false" aria-controls="filterPanel">
+        필터 열기
+      </button>
+
+      <div class="view-switch" role="group" aria-label="보기 방식">
+        <button class="view-btn is-active" type="button" data-view="list">목록</button>
+        <button class="view-btn" type="button" data-view="card">카드</button>
+      </div>
+    </section>
+
+    <section id="filterPanel" class="filter-panel" aria-label="상세 필터" hidden>
       <div class="select-wrap">
         <label for="categoryFilter">대분류</label>
         <select id="categoryFilter">
@@ -133,28 +144,24 @@
         </div>
       </div>
 
-      <div class="select-wrap">
-        <label for="sortSelect">정렬</label>
-        <select id="sortSelect">
-          <option value="number">번호순</option>
-          <option value="difficulty">난이도순</option>
-          <option value="category">대분류순</option>
-          <option value="status">상태순</option>
-          <option value="recent">최근 학습일순</option>
-        </select>
-      </div>
-
       <button id="resetBtn" class="ghost-btn" type="button">초기화</button>
+    </section>
+
+    <section class="sort-bar" aria-label="정렬">
+      <span class="sort-bar__label">정렬</span>
+
+      <div class="sort-options">
+        <button class="sort-btn is-active" type="button" data-sort="number">번호 ↑</button>
+        <button class="sort-btn" type="button" data-sort="difficulty">난이도</button>
+        <button class="sort-btn" type="button" data-sort="status">상태</button>
+        <button class="sort-btn" type="button" data-sort="recent">학습일</button>
+      </div>
     </section>
 
     <section class="result-head">
       <div>
         <h2>주제 목록</h2>
         <p><strong id="visibleCount">0</strong>개 표시 중</p>
-      </div>
-      <div class="view-switch" role="group" aria-label="보기 방식">
-        <button class="view-btn is-active" type="button" data-view="list">목록</button>
-        <button class="view-btn" type="button" data-view="card">카드</button>
       </div>
     </section>
 
