@@ -19,18 +19,6 @@
 
 ## Next Work
 
-- [High] [feat/ui] Separate search bar and detailed filters.
-  - Keep the top area focused on quick actions.
-    - Search input, Filter toggle button, Sort select, Reset button, etc.
-
-- [High] [feat/filter] Move detailed filters into a collapsible filter panel.
-
-- [High] [style/filter] Rework filter layout after panel separation.
-  - Do not solve the current cramped layout by patching many small CSS rules.
-  - First separate the structure, then adjust spacing.
-  - Make the difficulty slider readable on desktop.
-  - Make filters stack naturally on smaller screens.
-
 - [Medium] [feat/filter] Add difficulty scale markers to the range slider.
   - Show Bronze-Ruby level positions visually.
   - Add tick marks and badge images.
@@ -117,3 +105,9 @@
 - [feat/filter] Add multiple status checkboxes.
 - [feat/filter] Add status presets: `전체`, `미완료만`, `완료만`, `진행중`.
 - [fix/filter] Show no topics when no status checkbox is selected.
+
+### 2026-05-09
+
+- [feat/ui] Separate search bar and detailed filters.
+- [feat/filter] Move detailed filters into a collapsible filter panel.
+- [style/filter] Rework search and filter layout after panel separation.
