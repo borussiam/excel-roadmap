@@ -160,6 +160,14 @@ function fillSelect(select, values) {
   select.value = "";
 }
 
+function toggleFilterPanel() {
+  const willOpen = els.filterPanel.hidden;
+
+  els.filterPanel.hidden = !willOpen;
+  els.filterToggleBtn.setAttribute("aria-expanded", String(willOpen));
+  els.filterToggleBtn.textContent = willOpen ? "필터 닫기" : "필터 열기";
+}
+
 function getSelectedStatuses() {
   return [...els.statusCheckboxes]
     .filter((checkbox) => checkbox.checked)
@@ -542,6 +550,8 @@ function bindEvents() {
     els.searchInput,
     els.categoryFilter,
   ].forEach((el) => el.addEventListener("input", applyFilters));
+
+  els.filterToggleBtn.addEventListener("click", toggleFilterPanel);
 
   els.statusCheckboxes.forEach((checkbox) => {
     checkbox.addEventListener("change", applyFilters);
