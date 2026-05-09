@@ -47,105 +47,110 @@
       </article>
     </section>
 
-    <section class="toolbar" aria-label="검색">
-      <div class="search-wrap">
-        <label for="searchInput">검색</label>
-        <input id="searchInput" type="search" placeholder="예: SUMPRODUCT, 드롭다운, 7005" autocomplete="off">
-      </div>
-
-      <button id="filterToggleBtn" class="ghost-btn" type="button" aria-expanded="false" aria-controls="filterPanel">
-        필터 열기
-      </button>
-
-      <div class="view-switch" role="group" aria-label="보기 방식">
-        <button class="view-btn is-active" type="button" data-view="list">목록</button>
-        <button class="view-btn" type="button" data-view="card">카드</button>
-      </div>
-    </section>
-
-    <section id="filterPanel" class="filter-panel" aria-label="상세 필터" hidden>
-      <div class="select-wrap">
-        <label for="categoryFilter">대분류</label>
-        <select id="categoryFilter">
-          <option value="">전체</option>
-        </select>
-      </div>
-
-      <div class="select-wrap level-range-filter">
-        <div class="level-range__header">
-          <span class="filter-label">난이도</span>
-          <strong id="levelRangeText">전체</strong>
+    <div class="control-area">
+      <section class="toolbar" aria-label="검색">
+        <div class="search-wrap">
+          <label for="searchInput">검색</label>
+          <input id="searchInput" type="search" placeholder="예: SUMPRODUCT, 드롭다운, 7005" autocomplete="off">
         </div>
 
-        <div class="range-slider">
-          <div class="range-slider__base"></div>
-          <div id="levelRangeTrack" class="range-slider__track"></div>
+        <button id="filterToggleBtn" class="ghost-btn" type="button" aria-expanded="false" aria-controls="filterPanel">
+          필터 열기
+        </button>
+      </section>
 
-          <input
-            id="levelMinRange"
-            class="range-slider__input range-slider__input--min"
-            type="range"
-            min="1"
-            max="30"
-            step="1"
-            value="1"
-            aria-label="시작 난이도 슬라이더"
-          >
+      <section id="filterPanel" class="filter-panel" aria-label="상세 필터" hidden>
+        <div class="filter-grid">
+          <div class="filter-left">
+            <div class="select-wrap category-filter">
+              <label for="categoryFilter">대분류</label>
+              <select id="categoryFilter">
+                <option value="">전체</option>
+              </select>
+            </div>
 
-          <input
-            id="levelMaxRange"
-            class="range-slider__input range-slider__input--max"
-            type="range"
-            min="1"
-            max="30"
-            step="1"
-            value="30"
-            aria-label="끝 난이도 슬라이더"
-          >
+            <div class="select-wrap status-filter">
+              <span class="filter-label">상태</span>
+
+              <div id="statusFilter" class="status-options" role="group" aria-label="상태 필터">
+                <label class="check-pill">
+                  <input class="status-checkbox" type="checkbox" value="미시작" checked>
+                  <span>미시작</span>
+                </label>
+
+                <label class="check-pill">
+                  <input class="status-checkbox" type="checkbox" value="진행중" checked>
+                  <span>진행중</span>
+                </label>
+
+                <label class="check-pill">
+                  <input class="status-checkbox" type="checkbox" value="완료" checked>
+                  <span>완료</span>
+                </label>
+
+                <label class="check-pill">
+                  <input class="status-checkbox" type="checkbox" value="보류" checked>
+                  <span>보류</span>
+                </label>
+              </div>
+
+              <div class="status-presets">
+                <button class="status-preset-btn" type="button" data-status-preset="all">전체</button>
+                <button class="status-preset-btn" type="button" data-status-preset="not-done">미완료만</button>
+                <button class="status-preset-btn" type="button" data-status-preset="done">완료만</button>
+                <button class="status-preset-btn" type="button" data-status-preset="progress">진행중</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="filter-right">
+            <div class="select-wrap level-range-filter">
+              <div class="level-range__header">
+                <span class="filter-label">난이도</span>
+                <strong id="levelRangeText">전체</strong>
+              </div>
+
+              <div class="range-slider">
+                <div class="range-slider__base"></div>
+                <div id="levelRangeTrack" class="range-slider__track"></div>
+
+                <input
+                  id="levelMinRange"
+                  class="range-slider__input range-slider__input--min"
+                  type="range"
+                  min="1"
+                  max="30"
+                  step="1"
+                  value="1"
+                  aria-label="시작 난이도 슬라이더"
+                >
+
+                <input
+                  id="levelMaxRange"
+                  class="range-slider__input range-slider__input--max"
+                  type="range"
+                  min="1"
+                  max="30"
+                  step="1"
+                  value="30"
+                  aria-label="끝 난이도 슬라이더"
+                >
+              </div>
+
+              <div class="level-range__selects">
+                <select id="levelMinFilter" aria-label="시작 난이도"></select>
+                <span>~</span>
+                <select id="levelMaxFilter" aria-label="끝 난이도"></select>
+              </div>
+
+              <div class="filter-actions">
+                <button id="resetBtn" class="reset-btn" type="button">필터 초기화</button>
+              </div>
+            </div>
+          </div>
         </div>
-
-        <div class="level-range__selects">
-          <select id="levelMinFilter" aria-label="시작 난이도"></select>
-          <span>~</span>
-          <select id="levelMaxFilter" aria-label="끝 난이도"></select>
-        </div>
-      </div>
-
-      <div class="select-wrap status-filter">
-        <span class="filter-label">상태</span>
-
-        <div id="statusFilter" class="status-options" role="group" aria-label="상태 필터">
-          <label class="check-pill">
-            <input class="status-checkbox" type="checkbox" value="미시작" checked>
-            <span>미시작</span>
-          </label>
-
-          <label class="check-pill">
-            <input class="status-checkbox" type="checkbox" value="진행중" checked>
-            <span>진행중</span>
-          </label>
-
-          <label class="check-pill">
-            <input class="status-checkbox" type="checkbox" value="완료" checked>
-            <span>완료</span>
-          </label>
-
-          <label class="check-pill">
-            <input class="status-checkbox" type="checkbox" value="보류" checked>
-            <span>보류</span>
-          </label>
-        </div>
-
-        <div class="status-presets">
-          <button class="status-preset-btn" type="button" data-status-preset="all">전체</button>
-          <button class="status-preset-btn" type="button" data-status-preset="not-done">미완료만</button>
-          <button class="status-preset-btn" type="button" data-status-preset="done">완료만</button>
-          <button class="status-preset-btn" type="button" data-status-preset="progress">진행중</button>
-        </div>
-      </div>
-
-      <button id="resetBtn" class="ghost-btn" type="button">초기화</button>
-    </section>
+      </section>
+    </div>
 
     <section class="sort-bar" aria-label="정렬">
       <span class="sort-bar__label">정렬</span>
@@ -162,6 +167,11 @@
       <div>
         <h2>주제 목록</h2>
         <p><strong id="visibleCount">0</strong>개 표시 중</p>
+      </div>
+
+      <div class="view-switch" role="group" aria-label="보기 방식">
+        <button class="view-btn is-active" type="button" data-view="list">목록</button>
+        <button class="view-btn" type="button" data-view="card">카드</button>
       </div>
     </section>
 
