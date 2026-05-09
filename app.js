@@ -347,39 +347,46 @@ function applyFilters() {
   renderCards(result);
 }
 
-function sortRows(rows, mode) {
+function sortRows(rows, key, dir) {
   const sorted = [...rows];
+  const direction = dir === "desc" ? -1 : 1;
 
-  if (mode === "difficulty") {
-    sorted.sort((a, b) => (a.난이도순서값 - b.난이도순서값) || (a.번호값 - b.번호값));
-    return sorted;
-  }
+  sorted.sort((a, b) => {
+    let result = 0;
 
-  if (mode === "category") {
-    sorted.sort((a, b) => {
-      const majorA = Number(a["대분류번호"] || 999);
-      const majorB = Number(b["대분류번호"] || 999);
-      return (majorA - majorB) || (a.번호값 - b.번호값);
-    });
-    return sorted;
-  }
-
-  if (mode === "status") {
-    sorted.sort((a, b) => (statusRank(a.상태값) - statusRank(b.상태값)) || (a.번호값 - b.번호값));
-    return sorted;
-  }
-
-  if (mode === "recent") {
-    sorted.sort((a, b) => {
+    if (key === "difficulty") {
+      result = a.난이도순서값 - b.난이도순서값;
+    } else if (key === "status") {
+      result = statusRank(a.상태값) - statusRank(b.상태값);
+    } else if (key === "recent") {
       const dateA = Date.parse(a["학습일"] || "1900-01-01");
       const dateB = Date.parse(b["학습일"] || "1900-01-01");
-      return dateB - dateA || a.번호값 - b.번호값;
-    });
-    return sorted;
-  }
+      result = dateA - dateB;
+    } else {
+      result = a.번호값 - b.번호값;
+    }
 
-  sorted.sort((a, b) => a.번호값 - b.번호값);
+    return result * direction || a.번호값 - b.번호값;
+  });
+
   return sorted;
+}
+
+function updateSortButtons() {
+  els.sortButtons.forEach((button) => {
+    const isActive = button.dataset.sort === state.sortKey;
+    const baseText = button.dataset.label || button.textContent.replace(/[↑↓]/g, "").trim();
+
+    button.dataset.label = baseText;
+    button.classList.toggle("is-active", isActive);
+
+    if (isActive) {
+      const arrow = state.sortDir === "asc" ? "↑" : "↓";
+      button.textContent = `${baseText} ${arrow}`;
+    } else {
+      button.textContent = baseText;
+    }
+  });
 }
 
 function renderCards(rows) {
