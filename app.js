@@ -4,6 +4,8 @@ const state = {
   rows: [],
   filtered: [],
   view: "list",
+  sortKey: "number",
+  sortDir: "asc",
 };
 
 const STATUS_OPTIONS = ["미시작", "진행중", "완료", "보류"];
@@ -21,7 +23,11 @@ const els = {
   levelRangeTrack: document.querySelector("#levelRangeTrack"),
   statusCheckboxes: document.querySelectorAll(".status-checkbox"),
   statusPresetButtons: document.querySelectorAll("[data-status-preset]"),
-  sortSelect: document.querySelector("#sortSelect"),
+
+  filterToggleBtn: document.querySelector("#filterToggleBtn"),
+  filterPanel: document.querySelector("#filterPanel"),
+  sortButtons: document.querySelectorAll(".sort-btn"),
+
   resetBtn: document.querySelector("#resetBtn"),
   viewButtons: document.querySelectorAll(".view-btn"),
   totalCount: document.querySelector("#totalCount"),
@@ -152,6 +158,14 @@ function fillSelect(select, values) {
   });
 
   select.value = "";
+}
+
+function toggleFilterPanel() {
+  const willOpen = els.filterPanel.hidden;
+
+  els.filterPanel.hidden = !willOpen;
+  els.filterToggleBtn.setAttribute("aria-expanded", String(willOpen));
+  els.filterToggleBtn.textContent = willOpen ? "필터 닫기" : "필터 열기";
 }
 
 function getSelectedStatuses() {
@@ -328,44 +342,51 @@ function applyFilters() {
     return matchesQuery && matchesCategory && matchesLevel && matchesStatus;
   });
 
-  result = sortRows(result, els.sortSelect.value);
+  result = sortRows(result, state.sortKey, state.sortDir);
   state.filtered = result;
   renderCards(result);
 }
 
-function sortRows(rows, mode) {
+function sortRows(rows, key, dir) {
   const sorted = [...rows];
+  const direction = dir === "desc" ? -1 : 1;
 
-  if (mode === "difficulty") {
-    sorted.sort((a, b) => (a.난이도순서값 - b.난이도순서값) || (a.번호값 - b.번호값));
-    return sorted;
-  }
+  sorted.sort((a, b) => {
+    let result = 0;
 
-  if (mode === "category") {
-    sorted.sort((a, b) => {
-      const majorA = Number(a["대분류번호"] || 999);
-      const majorB = Number(b["대분류번호"] || 999);
-      return (majorA - majorB) || (a.번호값 - b.번호값);
-    });
-    return sorted;
-  }
-
-  if (mode === "status") {
-    sorted.sort((a, b) => (statusRank(a.상태값) - statusRank(b.상태값)) || (a.번호값 - b.번호값));
-    return sorted;
-  }
-
-  if (mode === "recent") {
-    sorted.sort((a, b) => {
+    if (key === "difficulty") {
+      result = a.난이도순서값 - b.난이도순서값;
+    } else if (key === "status") {
+      result = statusRank(a.상태값) - statusRank(b.상태값);
+    } else if (key === "recent") {
       const dateA = Date.parse(a["학습일"] || "1900-01-01");
       const dateB = Date.parse(b["학습일"] || "1900-01-01");
-      return dateB - dateA || a.번호값 - b.번호값;
-    });
-    return sorted;
-  }
+      result = dateA - dateB;
+    } else {
+      result = a.번호값 - b.번호값;
+    }
 
-  sorted.sort((a, b) => a.번호값 - b.번호값);
+    return result * direction || a.번호값 - b.번호값;
+  });
+
   return sorted;
+}
+
+function updateSortButtons() {
+  els.sortButtons.forEach((button) => {
+    const isActive = button.dataset.sort === state.sortKey;
+    const baseText = button.dataset.label || button.textContent.replace(/[↑↓]/g, "").trim();
+
+    button.dataset.label = baseText;
+    button.classList.toggle("is-active", isActive);
+
+    if (isActive) {
+      const arrow = state.sortDir === "asc" ? "↑" : "↓";
+      button.textContent = `${baseText} ${arrow}`;
+    } else {
+      button.textContent = baseText;
+    }
+  });
 }
 
 function renderCards(rows) {
@@ -535,8 +556,9 @@ function bindEvents() {
   [
     els.searchInput,
     els.categoryFilter,
-    els.sortSelect,
   ].forEach((el) => el.addEventListener("input", applyFilters));
+
+  els.filterToggleBtn.addEventListener("click", toggleFilterPanel);
 
   els.statusCheckboxes.forEach((checkbox) => {
     checkbox.addEventListener("change", applyFilters);
@@ -590,12 +612,29 @@ function bindEvents() {
     applyFilters();
   });
 
+  els.sortButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const sortKey = button.dataset.sort;
+
+      if (state.sortKey === sortKey) {
+        state.sortDir = state.sortDir === "asc" ? "desc" : "asc";
+      } else {
+        state.sortKey = sortKey;
+        state.sortDir = "asc";
+      }
+
+      updateSortButtons();
+      applyFilters();
+    });
+  });
+
   els.resetBtn.addEventListener("click", () => {
     els.searchInput.value = "";
     els.categoryFilter.value = "";
     resetLevelRange();
     setSelectedStatuses(STATUS_OPTIONS);
-    els.sortSelect.value = "number";
+    state.sortKey = "number";
+    state.sortDir = "asc";
     applyFilters();
   });
 }
